@@ -40,21 +40,19 @@ var D_F_viewBase  = function () { //
      * @param {function} after function
      */
     this.a = function(p, u, s, e){  // oldal hozza adasa p = page , u = url, s = start funkcio, e = end funkcio 
-        e = e || function(){};
-        s = s || function(){};
-        E[p]=e;
-        S[p]=s;
+        E[p]=e || ()=>{};
+        P[p]=s || ()=>{};
         M[u]=p;
         v[p]=u;
     }
-    let d = document.getElementId;
+    let d = document.getElementById;
     let C = "";//current
     let L = "";//last    
-    let W = 0; // oldal refrissiteset blockolo code
+    let W = 0; // Working on progress indicator
     let M = {}// location map
-    let V = {}
-    let S = {}
-    let E = {}
+    let V = {} // page url dictonary
+    let P = {} // page show functions dictonary
+    let E = {} // page end functions dictonary
     try{const Y = new D_F_urlBase();}catch(e){}
     /*
      * @private 
@@ -73,23 +71,28 @@ var D_F_viewBase  = function () { //
         if (C !== "")
             d(C).className = "displayNull";
     };
-    const B = function () {
+    const B = function () { // Back
         S(L);
     }
-    const S = function (id) {//show page
-        if ((W === 1)||(C === id))
+    /* 
+     * Show page
+     * @param {string} page holder id string
+     * @private
+     */
+    const S = function (i) {//show page
+        if ((W === 1)||(C === i))
             return false;
         W = 1;
-        if (V[id] !== "n")
-            Y.S(V[id]);
-        d(id).className = "displayVisible";
+        if (V[i] !== "n")
+            Y.S(V[i]);
+        d(i).className = "displayVisible";
         H();
         L = C;//change last to current current
-        C = id;
+        C = i;
         setTimeout(function () { W = 0; }, 5);
-        try{document.getElementsByTagName("body")[0].scrollTo(0, 0);}catch(e){};
-        if (typeof E[L] !=="undefined") E[L]();
-        if (typeof S[C] !=="undefined") S[C]();
+        try{document.getElementsByTagName("body")[0].scrollTo(0, 0);}catch(e){}; // scroll to the top hide error
+        try{E[L]();}catch(e){}; 
+        try{P[C]();}catch(e){};
     };
 }
 
